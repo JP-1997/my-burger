@@ -6,6 +6,7 @@ import * as actions from '../../store/actions/index';
 import { connect } from 'react-redux';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import { Redirect } from 'react-router-dom';
+import { updateObject } from '../../shared/utility';
 
 class Auth extends Component {
 
@@ -72,15 +73,13 @@ class Auth extends Component {
     }
 
     inputChangedHandler = (event, controlName) => {
-        const updatedControls = {
-            ...this.state.controls,
-            [controlName]: {
-                ...this.state.controls[controlName],
+        const updatedControls = updateObject(this.state.controls, {
+            [controlName]: updateObject(this.state.controls[controlName], {
                 value: event.target.value,
                 valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
                 touched: true
-            }
-        };
+            })
+        });
         this.setState({ controls: updatedControls });
     }
 
@@ -125,7 +124,7 @@ class Auth extends Component {
 
         if (this.props.error) {
             errorMessage = (
-            <p>{this.props.error.message}</p>
+                <p>{this.props.error.message}</p>
             );
         }
 
@@ -143,7 +142,7 @@ class Auth extends Component {
                     <Button btnType="Success">SUBMIT</Button>
                 </form>
                 <Button
-                    clicked={this.switchAuthModeHandler} 
+                    clicked={this.switchAuthModeHandler}
                     btnType="Danger">SWITCH TO {this.state.isSignup ? 'SIGNIN' : 'SIGNUP'}</Button>
             </div>
         );
